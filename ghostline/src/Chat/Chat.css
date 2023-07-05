@@ -92,7 +92,7 @@
     margin: 0 0.5em 0 0;
   }
   #chat .chat__conversation-board__message-container:not(:last-child) {
-    margin: 0 0 2em 0;
+    margin: 0 0 1.2em 0;
   }
   #chat .chat__conversation-board__message__person {
     text-align: center;
@@ -126,7 +126,7 @@
   }
   #chat .chat__conversation-board__message__context {
     max-width: 60%;
-    align-self: flex-end;
+   
   }
   #chat .chat__conversation-board__message__options {
     align-self: center;
