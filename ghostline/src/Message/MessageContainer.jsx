@@ -1,13 +1,25 @@
-import React from 'react';
+import React from "react";
 
-const MessageContainer = ({ avatar, nickname, message, messages, reversed }) => {
+const MessageContainer = ({
+  avatar,
+  nickname,
+  message,
+  messages,
+  reversed,
+}) => {
   return (
-    <div className={`chat__conversation-board__message-container ${reversed ? 'reversed' : ''}`}>
+    <div
+      className={`chat__conversation-board__message-container ${
+        reversed ? "reversed" : ""
+      }`}
+    >
       <div className="chat__conversation-board__message__person">
         <div className="chat__conversation-board__message__person__avatar">
           <img src={avatar} alt={nickname} />
         </div>
-        <span className="chat__conversation-board__message__person__nickname">{nickname}</span>
+        <span className="chat__conversation-board__message__person__nickname">
+          {nickname}
+        </span>
       </div>
       <div className="chat__conversation-board__message__context">
         {message && (
@@ -15,11 +27,15 @@ const MessageContainer = ({ avatar, nickname, message, messages, reversed }) => 
             <span>{message}</span>
           </div>
         )}
-        {messages && messages.map((msg, index) => (
-          <div className="chat__conversation-board__message__bubble" key={index}>
-            <span>{msg}</span>
-          </div>
-        ))}
+        {messages &&
+          messages.map((msg, index) => (
+            <div
+              className="chat__conversation-board__message__bubble"
+              key={index}
+            >
+              <span>{msg}</span>
+            </div>
+          ))}
       </div>
       <div className="chat__conversation-board__message__options">
         <button className="btn-icon chat__conversation-board__message__option-button option-item emoji-button">
@@ -66,6 +82,6 @@ const MessageContainer = ({ avatar, nickname, message, messages, reversed }) => 
       </div>
     </div>
   );
-}
+};
 
 export default MessageContainer;

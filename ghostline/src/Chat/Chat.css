@@ -10,7 +10,7 @@
   }
   
   body {
-    background: url(https://images.unsplash.com/photo-1495808985667-ba4ce2ef31b3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80);
+    background: url(../assets/istockphoto-487137758-612x612.png);
     background-size: cover;
     margin: 0;
     padding: 0;
@@ -33,7 +33,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    /* background: url(https://images.unsplash.com/photo-1495808985667-ba4ce2ef31b3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80) fixed; */
+    /* background: url(../assets/logo.png) fixed;
+    background-repeat: no-repeat; */
     z-index: -1;
   }
   #chat .btn-icon {
@@ -117,14 +118,9 @@
   #chat .chat__conversation-board__message__person__nickname {
     font-size: 9px;
     color: #484848;
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-    display: none;
   }
   #chat .chat__conversation-board__message__context {
-    max-width: 55%;
+    max-width: 60%;
     align-self: flex-end;
   }
   #chat .chat__conversation-board__message__options {
