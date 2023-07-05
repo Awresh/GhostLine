@@ -247,6 +247,40 @@
     font-family: "Lato", sans-serif;
     resize: none;
   }
+  /* Stylish scrollbar for PC */
+#chat .chat__conversation-board {
+  scrollbar-width: thin;
+  scrollbar-color: #999999 #f0f0f0;
+}
+
+#chat .chat__conversation-board::-webkit-scrollbar {
+  width: 8px;
+}
+
+#chat .chat__conversation-board::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+#chat .chat__conversation-board::-webkit-scrollbar-thumb {
+  background-color: #999999;
+  /* border-radius: 4px; */
+}
+
+#chat .chat__conversation-board::-webkit-scrollbar-thumb:hover {
+  background-color: #666666;
+}
+  @media (max-width: 768px) {
+    /* Hide scrollbar for mobile devices */
+    #chat .chat__conversation-board {
+      overflow: auto;
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+    
+    #chat .chat__conversation-board::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, and Opera */
+    }
+  }
   
   @media only screen and (max-width: 600px) {
     #chat {
