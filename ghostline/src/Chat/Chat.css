@@ -188,6 +188,11 @@ body {
 #chat .chat__conversation-board__message__context {
   max-width: 60%;
 }
+#chat .reversed .chat__conversation-board__message__context {
+  display: flex;
+  align-items: end;
+  flex-direction: column;
+}
 
 #chat .chat__conversation-board__message__options {
   align-self: center;

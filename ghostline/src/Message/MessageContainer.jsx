@@ -5,7 +5,6 @@ import ReplyButton from "./ReplyButton";
 const MessageContainer = ({
   avatar,
   nickname,
-  message,
   messages,
   reversed,
   time,
@@ -25,16 +24,6 @@ const MessageContainer = ({
         </span>
       </div>
       <div className="chat__conversation-board__message__context">
-        {message && (
-          <div className="chat__conversation-board__message__bubble">
-            <span>{message}</span>
-            <p>{time}</p>
-            <div className="chat__conversation-board__message__options">
-              <ReactionButton />
-              <ReplyButton />
-            </div>
-          </div>
-        )}
         {messages &&
           messages.map((msg, index) => (
             <div
@@ -43,9 +32,9 @@ const MessageContainer = ({
             >
               <p>
                 <span style={{fontSize:'7px'}}>
-                  {time}
+                  {msg.time}
                 </span>
-                {msg}
+                {msg.message}
               </p>
 
               <div className="chat__conversation-board__message__options">
