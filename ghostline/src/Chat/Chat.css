@@ -340,7 +340,7 @@ body {
 /* Stylish scrollbar for PC */
 #chat .chat__conversation-board {
   scrollbar-width: thin;
-  scrollbar-color: #999999 #f0f0f0;
+  scrollbar-color: #a2a2a285 #f0f0f0;
 }
 
 #chat .chat__conversation-board::-webkit-scrollbar {
