@@ -154,7 +154,6 @@ const Chat = () => {
             key={index}
             avatar={message.avatar}
             nickname={message.nickname}
-            message={message.message}
             messages={message.messages} // Fix: Access `message.messages` directly
             reversed={message.reversed}
             time={message.messages.time}
