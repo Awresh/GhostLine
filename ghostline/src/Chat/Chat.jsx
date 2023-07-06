@@ -24,6 +24,7 @@ const Chat = () => {
     },
     {
       avatar: G2,
+      nickname: "G2",
       messages: ["WE MUST FIND HIM!!", "Wait ..."],
     },
     {
@@ -39,6 +40,7 @@ const Chat = () => {
     },
     {
       avatar: G3,
+      nickname: "G3",
       messages: ["I am from Kanpur"],
     },
     {
