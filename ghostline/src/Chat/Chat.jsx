@@ -1,43 +1,33 @@
 import React, { useEffect, useState } from "react";
 import MessageContainer from "../Message/MessageContainer";
-import ConversationPanel from "../Message/ConversationPanel";
 import G1 from "../assets/G1.png";
 import G2 from "../assets/G2.png";
-import G3 from "../assets/G5.png";
-import G4 from "../assets/G4.png";
 import "./Chat.css";
 import socket from "../Socket/Socket";
 
 const Chat = () => {
-  // Get current date and time
-  // Output the formatted time
-
-  // Define the conversation log
   const [recive, setRecive] = useState([]);
   const [usermessage, setUsermessage] = useState("");
   const [room, setRoom] = useState("");
-  const [senderCkeck, setSenderCheck] = useState(false);
-  const [reciverCheck, setReciverCheck] = useState(false);
   const [username, setUsername] = useState("");
+
   useEffect(() => {
     socket.on("connectedRoom", (data) => {
-      // setUsername(data);
       setRoom(data);
     });
-  }, []);
-  const handleAddFileClick = () => {
-    // Add file button click handler logic
-  };
 
-  const handleEmojiClick = () => {
-    // Emoji button click handler logic
-  };
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      handleSendMessageClick();
-    }
-  };
+    socket.on("chat message", (data) => {
+      const { sender, message, timestamp } = data;
+      setRecive((prevRecive) => [
+        ...prevRecive,
+        {
+          messages: [{ message: message, time: timestamp }],
+          sender: sender,
+          avatar: G2,
+        },
+      ]);
+    });
+  }, []);
 
   const handleSendMessageClick = () => {
     var currentDate = new Date();
@@ -49,61 +39,31 @@ const Chat = () => {
     hours = hours.toString().padStart(2, "0");
     minutes = minutes.toString().padStart(2, "0");
     var formattedTime = hours + ":" + minutes + " " + ampm;
-    
+
+    const newMessage = {
+      messages: [{ message: usermessage, time: formattedTime }],
+      sender: username,
+      reversed: true,
+      avatar: G1,
+    };
+
+    setRecive((prevRecive) => [...prevRecive, newMessage]);
+
     socket.emit("chat message", {
       sender: username,
       message: usermessage,
       room,
       timestamp: formattedTime,
     });
-    
-    setRecive((prevRecive) => [
-      ...prevRecive,
-      {
-        messages: [{ message: usermessage, time: formattedTime }],
-        sender: username,
-        reversed: true,
-        avatar: G1,
-      },
-    ]);
-    
+
     setUsermessage("");
   };
-
-  socket.on("chat message", (data) => {
-    const { sender, message, timestamp } = data;
-   setRecive([
-        ...recive,
-        {
-          messages: [{ message: message, time: timestamp }],
-          sender: sender,
-          avatar: G2,
-        },
-      ])
-      
-  });
-  console.log(recive);
-
-  const conversationLog = [
-    {
-      avatar: G1,
-      nickname: "G1",
-      messages: [
-        {
-          id: "011",
-          time: "12:12",
-          Response: [],
-          message: "Hii",
-        },
-        {
-          id: "012",
-          time: "12:15",
-          Response: [],
-          message: "How Are You",
-        },
-      ],
-    },
-  ];
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSendMessageClick();
+    }
+  };
   return (
     <div className="--dark-theme" id="chat">
       {/* Chat conversation board */}
@@ -124,7 +84,7 @@ const Chat = () => {
         <div className="chat__conversation-panel__container">
           <button
             className="chat__conversation-panel__button panel-item btn-icon add-file-button"
-            onClick={handleAddFileClick}
+            // onClick={handleAddFileClick}
           >
             <svg
               className="feather feather-plus sc-dnqmqq jxshSx"
@@ -145,7 +105,7 @@ const Chat = () => {
           </button>
           <button
             className="chat__conversation-panel__button panel-item btn-icon emoji-button"
-            onClick={handleEmojiClick}
+            
           >
             <svg
               className="feather feather-smile sc-dnqmqq jxshSx"
