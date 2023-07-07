@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MessageContainer from "../Message/MessageContainer";
 import G1 from "../assets/G1.png";
 import G2 from "../assets/G2.png";
@@ -10,6 +10,11 @@ const Chat = () => {
   const [usermessage, setUsermessage] = useState("");
   const [room, setRoom] = useState("");
   const [username, setUsername] = useState("");
+  const containerRef = useRef(null);
+
+  const scrollToBottom = () => {
+    containerRef.current.scrollTop = containerRef.current.scrollHeight;
+  };
 
   useEffect(() => {
     socket.on("connectedRoom", (data) => {
@@ -28,6 +33,9 @@ const Chat = () => {
       ]);
     });
   }, []);
+  useEffect(() => {
+    scrollToBottom(); // Scroll to bottom after updating the messages
+  }, [recive]);
 
   const handleSendMessageClick = () => {
     var currentDate = new Date();
@@ -48,6 +56,7 @@ const Chat = () => {
     };
 
     setRecive((prevRecive) => [...prevRecive, newMessage]);
+    scrollToBottom(); // Scroll to bottom when a new message is sent
 
     socket.emit("chat message", {
       sender: username,
@@ -67,7 +76,7 @@ const Chat = () => {
   return (
     <div className="--dark-theme" id="chat">
       {/* Chat conversation board */}
-      <div className="chat__conversation-board">
+      <div className="chat__conversation-board" ref={containerRef}>
          { recive && recive.map((message, index) => (
           <MessageContainer
             key={index}
@@ -79,7 +88,6 @@ const Chat = () => {
           />
         ))}
       </div>
-
       <div className="chat__conversation-panel">
         <div className="chat__conversation-panel__container">
           <button

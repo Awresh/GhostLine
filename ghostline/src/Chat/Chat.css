@@ -378,6 +378,7 @@ body {
   }
   #chat .chat__conversation-board {
     height: calc(100vh - 55px - 2em - 0.5em - 3em);
+    padding-top: 80vh;
   }
   /* #chat .chat__conversation-board__message__options {
       display: none !important;
