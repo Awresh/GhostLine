@@ -1,149 +1,189 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MessageContainer from "../Message/MessageContainer";
-import ConversationPanel from "../Message/ConversationPanel";
 import G1 from "../assets/G1.png";
 import G2 from "../assets/G2.png";
-import G3 from "../assets/G5.png";
-import G4 from "../assets/G4.png";
 import "./Chat.css";
+import socket from "../Socket/Socket";
+import isTypingIconDark from "../assets/typingLight1.gif";
+import isTypingIconLight from "../assets/typingDark1.gif";
 
 const Chat = () => {
-  // Define the conversation log
-  const conversationLog = [
-    {
+  const [receive, setReceive] = useState([]);
+  const [userMessage, setUserMessage] = useState("");
+  const [room, setRoom] = useState("");
+  const [username, setUsername] = useState("");
+  const containerRef = useRef(null);
+  const [isTyping,setIsTypind]=useState(false);
+  const scrollToBottom = () => {
+    containerRef.current.scrollTop = containerRef.current.scrollHeight;
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [receive]);
+
+  useEffect(() => {
+    socket.on("connectedRoom", (data) => {
+      setRoom(data);
+    });
+
+    socket.on("chat message", (data) => {
+      const { sender, message, timestamp } = data;
+      const newMessage = {
+        messages: [{ message: message, time: timestamp }],
+        sender: sender,
+        avatar: G2,
+      };
+
+      setReceive((prevReceive) => [...prevReceive, newMessage]);
+      vibrate(); // Trigger vibration when a new message is received
+    });
+  }, []);
+
+  const handleSendMessageClick = () => {
+    var currentDate = new Date();
+    var hours = currentDate.getHours();
+    var minutes = currentDate.getMinutes();
+    var ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    hours = hours.toString().padStart(2, "0");
+    minutes = minutes.toString().padStart(2, "0");
+    var formattedTime = hours + ":" + minutes + " " + ampm;
+
+    const newMessage = {
+      messages: [{ message: userMessage, time: formattedTime }],
+      sender: username,
+      reversed: true,
       avatar: G1,
-      nickname: "G1",
-      messages: [
-        "Somewhere stored deep, deep in my memory banks is the phrase 'It really whips the llama's ass'.",
-      ],
-    },
-    {
-      avatar: G3,
-      nickname: "G3",
-      messages: ["Think the guy that did the voice has a Twitter?"],
-    },
-    {
-      avatar: G2,
-      messages: ["WE MUST FIND HIM!!", "Wait ..."],
-    },
-    {
-      reversed: true,
-      avatar: G4,
-      nickname: "G4",
-      messages: ["Winamp's still an essential."],
-    },
-    {
-      avatar: G2,
-      nickname: "G2",
-      messages: ["Are U From", "Wait ..."],
-    },
-    {
-      avatar: G3,
-      messages: ["I am from Kanpur"],
-    },
-    {
-      avatar: G2,
-      nickname: "G2",
-      messages: ["And I am from Lucknow"],
-    },
-    {
-      reversed: true,
-      avatar: G4,
-      messages: ["Ok Ok i got it", "I am from Gorakhpur"],
-    },
-    // Additional messages
-    {
-      avatar: G1,
-      nickname: "G1",
-      messages: ["Do you have any favorite music genres?"],
-    },
-    {
-      avatar: G2,
-      nickname: "G2",
-      messages: [
-        "I enjoy listening to various genres like pop, rock, and electronic music.",
-      ],
-    },
-    {
-      avatar: G3,
-      nickname: "G3",
-      messages: ["I'm a fan of hip-hop and R&B."],
-    },
-    {
-      reversed: true,
-      avatar: G4,
-      nickname: "G4",
-      messages: ["I love classical music and jazz."],
-    },
-    // More additional messages
-    {
-      avatar: G1,
-      nickname: "G1",
-      messages: ["That's cool! Music is so diverse and wonderful."],
-    },
-    {
-      avatar: G2,
-      nickname: "G2",
-      messages: ["Absolutely! It's a universal language that connects people."],
-    },
-    {
-      avatar: G3,
-      nickname: "G3",
-      messages: [
-        "I completely agree. Music has the power to evoke emotions and memories.",
-      ],
-    },
-    {
-      reversed: true,
-      avatar: G4,
-      nickname: "G4",
-      messages: ["Indeed. Each genre has its own unique charm."],
-    },
-    {
-      avatar: G1,
-      nickname: "G1",
-      messages: ["By the way, do any of you play any musical instruments?"],
-    },
-    {
-      avatar: G2,
-      nickname: "G2",
-      messages: ["I play the guitar. What about you guys?"],
-    },
-    {
-      
-      avatar: G3,
-      nickname: "G3",
-      messages: [
-        "I'm learning to play the piano. It's challenging, but I love it.",
-      ],
-    },
-    {
-      reversed: true,
-      avatar: G4,
-      nickname: "G4",
-      messages: [
-        "I used to play the violin when I was younger. It's been a while though.",
-      ],
-    },
-  ];
+    };
+
+    setReceive((prevReceive) => [...prevReceive, newMessage]);
+
+    socket.emit("chat message", {
+      sender: username,
+      message: userMessage,
+      room,
+      timestamp: formattedTime,
+    });
+
+    setUserMessage("");
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSendMessageClick();
+    }
+  };
+
+  const vibrate = () => {
+    if (navigator.vibrate) {
+      navigator.vibrate(200); // Vibrate for 200ms
+    }
+  };
 
   return (
-    <div className="--dark-theme" id="chat">
+    <div  id="chat" >
       {/* Chat conversation board */}
-      <div className="chat__conversation-board">
-        {conversationLog.map((message, index) => (
+       {/* Chat conversation board */}
+       <div className='chat__conversation-board' ref={containerRef}>
+         { receive && receive.map((message, index) => (
           <MessageContainer
             key={index}
             avatar={message.avatar}
             nickname={message.nickname}
-            message={message.message}
-            messages={message.messages}
+            messages={message.messages} // Fix: Access `message.messages` directly
             reversed={message.reversed}
+            time={message.messages.time}
           />
         ))}
       </div>
-      {/* Conversation panel */}
-      <ConversationPanel />
+      <div>
+        <img
+          src={isTypingIconLight}
+          style={{ width: "2rem" }}
+          className="isTypingIconLight"
+        ></img>
+        <img
+          src={isTypingIconDark}
+          style={{ width: "2rem" }}
+          className="isTypingIconDark"
+        ></img>
+      </div>
+      <div className="chat__conversation-panel">
+        <div className="chat__conversation-panel__container">
+          <button
+            className="chat__conversation-panel__button panel-item btn-icon add-file-button"
+            // onClick={handleAddFileClick}
+          >
+            <svg
+              className="feather feather-plus sc-dnqmqq jxshSx"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button className="chat__conversation-panel__button panel-item btn-icon emoji-button">
+            <svg
+              className="feather feather-smile sc-dnqmqq jxshSx"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+              <line x1="9" y1="9" x2="9.01" y2="9"></line>
+              <line x1="15" y1="9" x2="15.01" y2="9"></line>
+            </svg>
+          </button>
+          <input
+            className="chat__conversation-panel__input panel-item"
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message..."
+            onChange={(e) => setUserMessage(e.target.value)}
+            value={userMessage}
+          />
+          <button
+            className="chat__conversation-panel__button panel-item btn-icon send-message-button"
+            onClick={handleSendMessageClick}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              data-reactid="1036"
+            >
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
