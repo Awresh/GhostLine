@@ -13,7 +13,7 @@ const Chat = () => {
   const [room, setRoom] = useState("");
   const [username, setUsername] = useState("");
   const containerRef = useRef(null);
-
+  const [isTyping,setIsTypind]=useState(false);
   const scrollToBottom = () => {
     containerRef.current.scrollTop = containerRef.current.scrollHeight;
   };
@@ -84,10 +84,10 @@ const Chat = () => {
   };
 
   return (
-    <div  id="chat">
+    <div  id="chat" >
       {/* Chat conversation board */}
        {/* Chat conversation board */}
-       <div className="chat__conversation-board" ref={containerRef}>
+       <div className='chat__conversation-board' ref={containerRef}>
          { receive && receive.map((message, index) => (
           <MessageContainer
             key={index}

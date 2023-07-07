@@ -8,7 +8,7 @@
   --chat-send-button-background-light: #0352c9;
   --chat-text-color-light: #ffffff;
   --chat-options-svg-light: #54575c;
-  --chat-input-text-color-light: #54575c; /* New CSS variable for input text color in light theme */
+  --chat-input-text-color-light:#54575c; /* New CSS variable for input text color in light theme */
 
   /* Dark theme */
   --chat-background-dark: rgba(10, 14, 14, 0.95);
@@ -239,11 +239,7 @@ body {
   display: flex;
   flex-direction: column-reverse;
 }
-#chat
-  .chat__conversation-board__message-container.reversed
-  .chat__conversation-board__message__bubble
-  p
-  span {
+#chat .chat__conversation-board__message-container.reversed .chat__conversation-board__message__bubble p span{
   text-align: end;
 }
 
@@ -385,6 +381,9 @@ body {
     height: calc(98vh - 70px - 2em - 0.5em - 3em);
     padding-top: 70vh;
   }
+  #chat .chat__conversation-panel .send-message-button{
+    display: none;
+  }
   /* #chat .chat__conversation-board__message__options {
       display: none !important;
     } */
@@ -397,12 +396,12 @@ body {
 .chat__conversation-board__message__bubble.slide-left {
   transform: translateX(-100%);
 }
-.time-stamp {
+.time-stamp{
   width: fit-content;
 }
-.--dark-theme .isTypingIconLight {
+.--dark-theme .isTypingIconLight{
   display: none;
 }
-.--light-theme .isTypingIconDark {
+.--light-theme .isTypingIconDark{
   display: none;
 }
