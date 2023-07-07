@@ -38,11 +38,17 @@ const Chat = () => {
       setReceive((prevReceive) => [...prevReceive, newMessage]);
       vibrate(); // Trigger vibration when a new message is received
     });
-    
+    let typingTimeout;
     socket.on("typing", (data) => {
       const { typing } = data;
       setIsTypind(typing)
-      
+      if (typing) {
+        clearTimeout(typingTimeout); 
+    
+      typingTimeout = setTimeout(() => {
+        setIsTypind(false);
+        }, 2000);
+      }
     });
   }, []);
   console.log(isTyping)
@@ -109,7 +115,7 @@ const Chat = () => {
           />
         ))}
       </div>
-      <div>
+      {isTyping ? <div>
         <img
           src={isTypingIconLight}
           style={{ width: "2rem" }}
@@ -120,7 +126,7 @@ const Chat = () => {
           style={{ width: "2rem" }}
           className="isTypingIconDark"
         ></img>
-      </div>
+      </div>:""}
       <div className="chat__conversation-panel">
         <div className="chat__conversation-panel__container">
           <button

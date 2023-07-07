@@ -1,6 +1,6 @@
 import socketIOClient from 'socket.io-client';
 
-const socket = socketIOClient('http://localhost:3000'); // Replace with your server URL
+const socket = socketIOClient('https://chat-et27.onrender.com/'); // Replace with your server URL
 // socket.on("connectedRoom",(data)=>{
 //     console.log(data)
 // })
