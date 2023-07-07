@@ -4,10 +4,12 @@ import G1 from "../assets/G1.png";
 import G2 from "../assets/G2.png";
 import "./Chat.css";
 import socket from "../Socket/Socket";
+import isTypingIconDark from "../assets/typingLight1.gif";
+import isTypingIconLight from "../assets/typingDark1.gif";
 
 const Chat = () => {
-  const [recive, setRecive] = useState([]);
-  const [usermessage, setUsermessage] = useState("");
+  const [receive, setReceive] = useState([]);
+  const [userMessage, setUserMessage] = useState("");
   const [room, setRoom] = useState("");
   const [username, setUsername] = useState("");
   const containerRef = useRef(null);
@@ -17,25 +19,26 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    scrollToBottom();
+  }, [receive]);
+
+  useEffect(() => {
     socket.on("connectedRoom", (data) => {
       setRoom(data);
     });
 
     socket.on("chat message", (data) => {
       const { sender, message, timestamp } = data;
-      setRecive((prevRecive) => [
-        ...prevRecive,
-        {
-          messages: [{ message: message, time: timestamp }],
-          sender: sender,
-          avatar: G2,
-        },
-      ]);
+      const newMessage = {
+        messages: [{ message: message, time: timestamp }],
+        sender: sender,
+        avatar: G2,
+      };
+
+      setReceive((prevReceive) => [...prevReceive, newMessage]);
+      vibrate(); // Trigger vibration when a new message is received
     });
   }, []);
-  useEffect(() => {
-    scrollToBottom(); // Scroll to bottom after updating the messages
-  }, [recive]);
 
   const handleSendMessageClick = () => {
     var currentDate = new Date();
@@ -49,35 +52,43 @@ const Chat = () => {
     var formattedTime = hours + ":" + minutes + " " + ampm;
 
     const newMessage = {
-      messages: [{ message: usermessage, time: formattedTime }],
+      messages: [{ message: userMessage, time: formattedTime }],
       sender: username,
       reversed: true,
       avatar: G1,
     };
 
-    setRecive((prevRecive) => [...prevRecive, newMessage]);
-    scrollToBottom(); // Scroll to bottom when a new message is sent
+    setReceive((prevReceive) => [...prevReceive, newMessage]);
 
     socket.emit("chat message", {
       sender: username,
-      message: usermessage,
+      message: userMessage,
       room,
       timestamp: formattedTime,
     });
 
-    setUsermessage("");
+    setUserMessage("");
   };
+
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       handleSendMessageClick();
     }
   };
+
+  const vibrate = () => {
+    if (navigator.vibrate) {
+      navigator.vibrate(200); // Vibrate for 200ms
+    }
+  };
+
   return (
-    <div className="--dark-theme" id="chat">
+    <div  id="chat">
       {/* Chat conversation board */}
-      <div className="chat__conversation-board" ref={containerRef}>
-         { recive && recive.map((message, index) => (
+       {/* Chat conversation board */}
+       <div className="chat__conversation-board" ref={containerRef}>
+         { receive && receive.map((message, index) => (
           <MessageContainer
             key={index}
             avatar={message.avatar}
@@ -87,6 +98,18 @@ const Chat = () => {
             time={message.messages.time}
           />
         ))}
+      </div>
+      <div>
+        <img
+          src={isTypingIconLight}
+          style={{ width: "2rem" }}
+          className="isTypingIconLight"
+        ></img>
+        <img
+          src={isTypingIconDark}
+          style={{ width: "2rem" }}
+          className="isTypingIconDark"
+        ></img>
       </div>
       <div className="chat__conversation-panel">
         <div className="chat__conversation-panel__container">
@@ -111,10 +134,7 @@ const Chat = () => {
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
           </button>
-          <button
-            className="chat__conversation-panel__button panel-item btn-icon emoji-button"
-            
-          >
+          <button className="chat__conversation-panel__button panel-item btn-icon emoji-button">
             <svg
               className="feather feather-smile sc-dnqmqq jxshSx"
               xmlns="http://www.w3.org/2000/svg"
@@ -138,9 +158,8 @@ const Chat = () => {
             className="chat__conversation-panel__input panel-item"
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
-            onChange={(e) => setUsermessage(e.target.value)}
-            value={usermessage}
-            
+            onChange={(e) => setUserMessage(e.target.value)}
+            value={userMessage}
           />
           <button
             className="chat__conversation-panel__button panel-item btn-icon send-message-button"

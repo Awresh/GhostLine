@@ -8,7 +8,7 @@
   --chat-send-button-background-light: #0352c9;
   --chat-text-color-light: #ffffff;
   --chat-options-svg-light: #54575c;
-  --chat-input-text-color-light:#54575c; /* New CSS variable for input text color in light theme */
+  --chat-input-text-color-light: #54575c; /* New CSS variable for input text color in light theme */
 
   /* Dark theme */
   --chat-background-dark: rgba(10, 14, 14, 0.95);
@@ -103,7 +103,7 @@ body {
 }
 
 #chat .chat__conversation-board {
-  padding: 1em 0 2em;
+  padding: 1em 0 0.5em;
   height: calc(100vh - 55px - 2em - 25px * 2 - 0.5em - 3em);
   overflow: auto;
 }
@@ -239,7 +239,11 @@ body {
   display: flex;
   flex-direction: column-reverse;
 }
-#chat .chat__conversation-board__message-container.reversed .chat__conversation-board__message__bubble p span{
+#chat
+  .chat__conversation-board__message-container.reversed
+  .chat__conversation-board__message__bubble
+  p
+  span {
   text-align: end;
 }
 
@@ -257,7 +261,8 @@ body {
   border-radius: 12px;
   padding: 0 1em;
   height: 55px;
-  margin: 0.5em 0 0;
+  margin-bottom: 15px;
+  /* margin: 0.5em 0 0; */
 }
 
 #chat .chat__conversation-panel__container {
@@ -338,24 +343,24 @@ body {
 }
 
 /* Stylish scrollbar for PC */
-#chat .chat__conversation-board {
+#chat * {
   scrollbar-width: thin;
   scrollbar-color: #a2a2a285 #f0f0f0;
 }
 
-#chat .chat__conversation-board::-webkit-scrollbar {
+#chat *::-webkit-scrollbar {
   width: 8px;
 }
 
-#chat .chat__conversation-board::-webkit-scrollbar-track {
+#chat *::-webkit-scrollbar-track {
   background: #f0f0f0;
 }
 
-#chat .chat__conversation-board::-webkit-scrollbar-thumb {
+#chat *::-webkit-scrollbar-thumb {
   background-color: #999999;
 }
 
-#chat .chat__conversation-board::-webkit-scrollbar-thumb:hover {
+#chat *::-webkit-scrollbar-thumb:hover {
   background-color: #666666;
 }
 @media (max-width: 768px) {
@@ -366,7 +371,7 @@ body {
     scrollbar-width: none; /* Firefox */
   }
 
-  #chat .chat__conversation-board::-webkit-scrollbar {
+  #chat *::-webkit-scrollbar {
     display: none; /* Chrome, Safari, and Opera */
   }
 }
@@ -377,8 +382,8 @@ body {
     border-radius: 0;
   }
   #chat .chat__conversation-board {
-    height: calc(100vh - 55px - 2em - 0.5em - 3em);
-    padding-top: 80vh;
+    height: calc(98vh - 70px - 2em - 0.5em - 3em);
+    padding-top: 70vh;
   }
   /* #chat .chat__conversation-board__message__options {
       display: none !important;
@@ -392,6 +397,12 @@ body {
 .chat__conversation-board__message__bubble.slide-left {
   transform: translateX(-100%);
 }
-.time-stamp{
+.time-stamp {
   width: fit-content;
+}
+.--dark-theme .isTypingIconLight {
+  display: none;
+}
+.--light-theme .isTypingIconDark {
+  display: none;
 }
