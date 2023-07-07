@@ -41,6 +41,11 @@ if(full>=2){
     
   });
 
+  socket.on('typing', (data) => {
+   const {room}=data
+    socket.to(room).emit('typing',  data);
+  });
+
 
   socket.on('disconnect', () => {
     

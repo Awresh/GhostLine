@@ -14,6 +14,7 @@ const Chat = () => {
   const [username, setUsername] = useState("");
   const containerRef = useRef(null);
   const [isTyping,setIsTypind]=useState(false);
+  
   const scrollToBottom = () => {
     containerRef.current.scrollTop = containerRef.current.scrollHeight;
   };
@@ -34,12 +35,17 @@ const Chat = () => {
         sender: sender,
         avatar: G2,
       };
-
       setReceive((prevReceive) => [...prevReceive, newMessage]);
       vibrate(); // Trigger vibration when a new message is received
     });
+    
+    socket.on("typing", (data) => {
+      const { typing } = data;
+      setIsTypind(typing)
+      
+    });
   }, []);
-
+  console.log(isTyping)
   const handleSendMessageClick = () => {
     var currentDate = new Date();
     var hours = currentDate.getHours();
@@ -70,6 +76,10 @@ const Chat = () => {
     setUserMessage("");
   };
 
+  const onChengHendel=(e)=>{
+    socket.emit("typing",{typing:true,room})
+     setUserMessage(e.target.value)
+  }
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -158,7 +168,7 @@ const Chat = () => {
             className="chat__conversation-panel__input panel-item"
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
-            onChange={(e) => setUserMessage(e.target.value)}
+            onChange={onChengHendel}
             value={userMessage}
           />
           <button
