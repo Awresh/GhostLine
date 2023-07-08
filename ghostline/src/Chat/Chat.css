@@ -330,7 +330,7 @@ body {
   height: 100%;
   outline: none;
   position: relative;
-  color: var(--chat-input-text-color-light);
+  color: rgb(153, 152, 152);
   font-size: 13px;
   background: transparent;
   border: 0;
@@ -404,4 +404,12 @@ body {
 }
 .--light-theme .isTypingIconDark{
   display: none;
+}
+.isTypingIconsContainer {
+  opacity: 0; /* Start with 0 opacity to hide the images */
+  transition: opacity 0.3s ease; /* Add a transition effect for opacity */
+}
+
+.isTypingIconsContainer.visible {
+  opacity: 1; /* Show the images by setting opacity to 1 */
 }

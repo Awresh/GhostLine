@@ -13,8 +13,8 @@ const Chat = () => {
   const [room, setRoom] = useState("");
   const [username, setUsername] = useState("");
   const containerRef = useRef(null);
-  const [isTyping,setIsTypind]=useState(false);
-  
+  const [isTyping, setIsTypind] = useState(false);
+
   const scrollToBottom = () => {
     containerRef.current.scrollTop = containerRef.current.scrollHeight;
   };
@@ -36,22 +36,23 @@ const Chat = () => {
         avatar: G2,
       };
       setReceive((prevReceive) => [...prevReceive, newMessage]);
-      vibrate(); // Trigger vibration when a new message is received
+      vibrate();
+      setIsTypind(false); // Trigger vibration when a new message is received
     });
     let typingTimeout;
     socket.on("typing", (data) => {
       const { typing } = data;
-      setIsTypind(typing)
+      setIsTypind(typing);
       if (typing) {
-        clearTimeout(typingTimeout); 
-    
-      typingTimeout = setTimeout(() => {
-        setIsTypind(false);
-        }, 2000);
+        clearTimeout(typingTimeout);
+
+        typingTimeout = setTimeout(() => {
+          setIsTypind(false);
+        }, 1000);
       }
     });
   }, []);
-  console.log(isTyping)
+  console.log(isTyping);
   const handleSendMessageClick = () => {
     var currentDate = new Date();
     var hours = currentDate.getHours();
@@ -82,10 +83,10 @@ const Chat = () => {
     setUserMessage("");
   };
 
-  const onChengHendel=(e)=>{
-    socket.emit("typing",{typing:true,room})
-     setUserMessage(e.target.value)
-  }
+  const onChengHendel = (e) => {
+    socket.emit("typing", { typing: true, room });
+    setUserMessage(e.target.value);
+  };
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -100,33 +101,34 @@ const Chat = () => {
   };
 
   return (
-    <div  id="chat" >
+    <div id="chat">
       {/* Chat conversation board */}
-       {/* Chat conversation board */}
-       <div className='chat__conversation-board' ref={containerRef}>
-         { receive && receive.map((message, index) => (
-          <MessageContainer
-            key={index}
-            avatar={message.avatar}
-            nickname={message.nickname}
-            messages={message.messages} // Fix: Access `message.messages` directly
-            reversed={message.reversed}
-            time={message.messages.time}
-          />
-        ))}
+      {/* Chat conversation board */}
+      <div className="chat__conversation-board" ref={containerRef}>
+        {receive &&
+          receive.map((message, index) => (
+            <MessageContainer
+              key={index}
+              avatar={message.avatar}
+              nickname={message.nickname}
+              messages={message.messages} // Fix: Access `message.messages` directly
+              reversed={message.reversed}
+              time={message.messages.time}
+            />
+          ))}
       </div>
-      {isTyping ? <div>
+      <div className={`isTypingIconsContainer ${isTyping ? "visible" : ""}`}>
         <img
           src={isTypingIconLight}
-          style={{ width: "2rem" }}
+          style={{ width: "2.5rem" }}
           className="isTypingIconLight"
-        ></img>
+        />
         <img
           src={isTypingIconDark}
-          style={{ width: "2rem" }}
+          style={{ width: "2.5rem" }}
           className="isTypingIconDark"
-        ></img>
-      </div>:""}
+        />
+      </div>
       <div className="chat__conversation-panel">
         <div className="chat__conversation-panel__container">
           <button
