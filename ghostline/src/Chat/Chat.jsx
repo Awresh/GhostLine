@@ -21,6 +21,7 @@ const Chat = () => {
 
   useEffect(() => {
     scrollToBottom();
+    console.log(receive,"Recivess")
   }, [receive]);
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const Chat = () => {
       setRoom(data);
     });
 
+ 
     socket.on("chat message", (data) => {
       const { sender, message, timestamp } = data;
       const newMessage = {
