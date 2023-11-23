@@ -2,54 +2,54 @@
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
-const cors =require("cors")
+const cors = require("cors")
 const app = express();
 
 const server = http.createServer(app);
 
 app.use(cors())
 const io = socketIO(server, {
-    cors: {
-      origin: '*',
-    }
+  cors: {
+    origin: '*',
+  }
 });
 app.use(express.static('public'));
 
 
 const users = {};
-let room=1
-let full=0
+let room = 1
+let full = 0
 io.on('connection', (socket) => {
-socket.join("room-"+room);
-io.in("room-"+room).emit("connectedRoom","room-"+room)
+  socket.join("room-" + room);
+  io.in("room-" + room).emit("connectedRoom", "room-" + room)
 
-full++;
+  full++;
 
-if(full>=2){
-  full=0;
-  room++
-}
+  if (full >= 2) {
+    full = 0;
+    room++
+  }
 
   socket.on('chat message', (data) => {
-    const { sender,  message, room,timestamp } = data;
+    const { sender, message, room, timestamp } = data;
 
     // Send the message to the receiver
-    
-    socket.to(room).emit('chat message', { sender, message,timestamp });
-       
 
-    
+    socket.to(room).emit('chat message', { sender, message, timestamp });
+
+
+
   });
 
   socket.on('typing', (data) => {
-   const {room}=data
-    socket.to(room).emit('typing',  data);
+    const { room } = data
+    socket.to(room).emit('typing', data);
   });
 
 
   socket.on('disconnect', () => {
-    
-      delete users[socket.id];
+
+    delete users[socket.id];
     io.emit('user list', Object.values(users));
     console.log('A user disconnected.');
   });
