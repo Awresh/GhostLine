@@ -11,4 +11,4 @@ console.log(socket);
 }
 
 // Emit 'keepActive' event every 5 minutes (adjust interval as needed)
-setInterval(sendKeepActiveEvent,   1000); // 5 minutes in milliseconds
+setInterval(sendKeepActiveEvent,   5 * 60 * 1000); // 5 minutes in milliseconds
