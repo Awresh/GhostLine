@@ -7,7 +7,6 @@ const MessageContainer = ({
   nickname,
   messages,
   reversed,
-  time,
 }) => {
   return (
     <div

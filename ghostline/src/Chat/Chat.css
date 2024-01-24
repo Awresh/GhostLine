@@ -8,7 +8,7 @@
   --chat-send-button-background-light: #0352c9;
   --chat-text-color-light: #ffffff;
   --chat-options-svg-light: #54575c;
-  --chat-input-text-color-light:#54575c; /* New CSS variable for input text color in light theme */
+  --chat-input-text-color-light: #54575c; /* New CSS variable for input text color in light theme */
 
   /* Dark theme */
   --chat-background-dark: rgba(10, 14, 14, 0.95);
@@ -57,16 +57,118 @@
 }
 
 body {
-  background: url(../assets/istockphoto-487137758-612x612.png);
+  background: url(../assets/Pc_background.png);
   background-size: cover;
   margin: 0;
   padding: 0;
 }
+/* Existing styles... */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  font-family: Arial, sans-serif;
+}
+
+.tag-container {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.tag-input {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.tag-input input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+}
+
+.tag-input button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.tag span {
+  margin-right: 5px;
+}
+
+
+
+.start-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: rgb(22, 20, 20);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+  background-color: #218838;
+}
+
+
+.tag {
+  position: relative;
+  background-color: rgb(248, 216, 237);
+  color: rgb(24, 20, 20);
+  padding: 5px 30px 5px 10px; /* Increased padding for space */
+  border-radius: 4px;
+  margin: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.tag span {
+  margin-right: 5px;
+}
+
+.tag .remove-icon {
+  position: absolute;
+ 
+  right: 5px;
+  transform: translateY(-20%);
+  /* height: 20px; */
+  top: 33%;
+  cursor: pointer;
+  color:rgb(220, 32, 32);
+}
+
+/* Existing styles... */
 
 #chat {
   background: var(--chat-background);
   max-width: 600px;
-  margin: 25px auto;
+  margin: 10px auto;
   box-sizing: border-box;
   padding: 1em;
   border-radius: 12px;
@@ -156,8 +258,8 @@ body {
 }
 
 #chat .chat__conversation-board__message__person__avatar {
-  height: 35px;
-  width: 35px;
+  height: 30px;
+  width: 30px;
   overflow: hidden;
   border-radius: 50%;
   -webkit-user-select: none;
@@ -239,7 +341,11 @@ body {
   display: flex;
   flex-direction: column-reverse;
 }
-#chat .chat__conversation-board__message-container.reversed .chat__conversation-board__message__bubble p span{
+#chat
+  .chat__conversation-board__message-container.reversed
+  .chat__conversation-board__message__bubble
+  p
+  span {
   text-align: end;
 }
 
@@ -310,7 +416,8 @@ body {
 }
 
 #chat .chat__conversation-panel .send-message-button {
-  background: var(--chat-send-button-background);
+  /* background: var(--chat-send-button-background); */
+  background: #0352c9;
   height: 30px;
   min-width: 30px;
   border-radius: 50%;
@@ -371,19 +478,38 @@ body {
     display: none; /* Chrome, Safari, and Opera */
   }
 }
-
+.SectionTag {
+  margin: auto;
+  margin-top: 10%;
+  max-width: 500px;
+}
 @media only screen and (max-width: 600px) {
+  /* #root{
+    background: var(--chat-background);
+  } */
+  /* body {
+    background: url(../assets/Mobile_background.png);
+  } */
   #chat {
     margin: 0;
     border-radius: 0;
+    height: 99vh;
+    margin-top: -2%;
   }
   #chat .chat__conversation-board {
-    height: calc(98vh - 70px - 2em - 0.5em - 3em);
+    height: calc(96vh - 70px - 2em - 0.5em - 3em);
     padding-top: 70vh;
   }
-  #chat .chat__conversation-panel .send-message-button{
-    display: none;
+  .SectionTag {
+    margin: 20px;
+    margin-top: 40%;
   }
+  .tag span {
+    font-size: 12px;
+  }
+  /* #chat .chat__conversation-panel .send-message-button{
+    display: none;
+  } */
   /* #chat .chat__conversation-board__message__options {
       display: none !important;
     } */
@@ -396,13 +522,13 @@ body {
 .chat__conversation-board__message__bubble.slide-left {
   transform: translateX(-100%);
 }
-.time-stamp{
+.time-stamp {
   width: fit-content;
 }
-.--dark-theme .isTypingIconLight{
+.--dark-theme .isTypingIconLight {
   display: none;
 }
-.--light-theme .isTypingIconDark{
+.--light-theme .isTypingIconDark {
   display: none;
 }
 .isTypingIconsContainer {
@@ -412,4 +538,87 @@ body {
 
 .isTypingIconsContainer.visible {
   opacity: 1; /* Show the images by setting opacity to 1 */
+}
+.Toastify__toast {
+  /* Common styles */
+  padding: 12px;
+  border-radius: 10px;
+}
+
+/* Light theme styles */
+.--light-theme .Toastify__toast {
+  /* Light mode styles */
+  background-color: #fff;
+  color: #000;
+}
+.--light-theme .navText {
+  color: black;
+}
+.--dark-theme .navText {
+  color: var(--chat-text-color);
+}
+.--dark-theme .Toastify__toast {
+  /* Light mode styles */
+  background-color: #050505;
+  color: #c9c0c0;
+}
+
+.--dark-theme .matchedInterests {
+  color: #c9c0c0;
+}
+.--dark-theme .Toastify__close-button--light {
+  color: #ffffff;
+  opacity: 0.5;
+}
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+}
+.lds-ellipsis div {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #0352c9;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
 }
