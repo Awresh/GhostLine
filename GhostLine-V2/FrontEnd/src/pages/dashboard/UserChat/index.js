@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DropdownMenu, DropdownItem, DropdownToggle, UncontrolledDropdown, Modal, ModalHeader, ModalBody, CardBody, Button, ModalFooter } from "reactstrap";
+import { DropdownMenu, DropdownItem, DropdownToggle, UncontrolledDropdown, Modal, ModalHeader, ModalBody, CardBody, Button, ModalFooter, Input } from "reactstrap";
 import { connect } from "react-redux";
-
 import SimpleBar from "simplebar-react";
-
+import { io } from "socket.io-client";
 import withRouter from "../../../components/withRouter";
-
+import { nanoid } from 'nanoid'
 //Import Components
 import UserProfileSidebar from "../../../components/UserProfileSidebar";
 import SelectContact from "../../../components/SelectContact";
@@ -23,98 +22,173 @@ import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 
 //i18n
 import { useTranslation } from 'react-i18next';
+const socket = io("http://ghostline.webperfection.in:8081");
+
+let userID = localStorage.getItem("userID");
+
+if (!userID) {
+    userID = nanoid(5);
+    localStorage.setItem("userID", userID);
+}
 
 function UserChat(props) {
 
     const ref = useRef();
-
+    const [intres, setIntrest] = useState("")
     const [modal, setModal] = useState(false);
-
+    const [matchUSer, setMatchUser] = useState(false)
     /* intilize t variable for multi language implementation */
     const { t } = useTranslation();
 
     //demo conversation messages
-    //userType must be required
+    //userType must be required  { id: 1, message: "hi", time: "01:05", userType: "receiver", isImageMessage : false, isFileMessage : false }
     const [allUsers] = useState(props.recentChatList);
-    const [chatMessages, setchatMessages] = useState(props.recentChatList[props.active_user].messages);
+    const [chatMessages, setchatMessages] = useState([]);
+    useEffect(() => {
+        // ('submitInterest', (userId, roomid, interests)
+        socket.emit("identify", userID)
+        console.log("socket", socket)
+    }, [])
+    // useEffect(() => {
+    //     setchatMessages(props.recentChatList[props.active_user].messages);
+    //     ref.current.recalculate();
+    //     if (ref.current.el) {
+    //         ref.current.getScrollElement().scrollTop = ref.current.getScrollElement().scrollHeight;
+    //     }
+    // }, [props.active_user, props.recentChatList]);
 
     useEffect(() => {
-        setchatMessages(props.recentChatList[props.active_user].messages);
-        ref.current.recalculate();
-        if (ref.current.el) {
-            ref.current.getScrollElement().scrollTop = ref.current.getScrollElement().scrollHeight;
-        }
-    }, [props.active_user, props.recentChatList]);
+        const handleMatchedInterests = (data) => {
+            console.log(`Private message from ${data.roomId}`);
+            setMatchUser(data.roomId)
+        };
 
+        socket.on("matchedInterests", handleMatchedInterests);
+
+        // Cleanup function to remove the listener
+        return () => {
+            socket.off("matchedInterests", handleMatchedInterests);
+            socket.disconnect();
+        };
+    }, []);
+    useEffect(() => {
+        const handleMatchedInterests = (data) => {
+            let d = new Date();
+            let seconds = d.getSeconds();
+            const messageObj = {
+                id: chatMessages.length + 1,
+                message: data.message,
+                time: `00:${seconds}`,
+                userType: "receiver",
+                image: avatar1,
+                isFileMessage: false,
+                isImageMessage: false
+            };
+    
+            // Use functional update to ensure latest state is used
+            setchatMessages((prevMessages) => [...prevMessages, messageObj]);
+    
+            console.log(`Private message from ${data.message}`, messageObj);
+        };
+    
+        socket.on("private_message", handleMatchedInterests);
+    
+        // Cleanup function to remove the listener
+        return () => {
+            socket.off("private_message", handleMatchedInterests);
+            socket.disconnect();
+        };
+    }, [avatar1, socket]); // Include dependencies like `avatar1` and `socket`
+    
+    
     const toggle = () => setModal(!modal);
-
+    console.log("matchUser", matchUSer)
     const addMessage = (message, type) => {
         var messageObj = null;
 
         let d = new Date();
         var n = d.getSeconds();
-
-        //matches the message type is text, file or image, and create object according to it
-        switch (type) {
-            case "textMessage":
-                messageObj = {
-                    id: chatMessages.length + 1,
-                    message: message,
-                    time: "00:" + n,
-                    userType: "sender",
-                    image: avatar4,
-                    isFileMessage: false,
-                    isImageMessage: false
-                }
-                break;
-
-            case "fileMessage":
-                messageObj = {
-                    id: chatMessages.length + 1,
-                    message: 'file',
-                    fileMessage: message.name,
-                    size: message.size,
-                    time: "00:" + n,
-                    userType: "sender",
-                    image: avatar4,
-                    isFileMessage: true,
-                    isImageMessage: false
-                }
-                break;
-
-            case "imageMessage":
-                var imageMessage = [
-                    { image: message },
-                ]
-
-                messageObj = {
-                    id: chatMessages.length + 1,
-                    message: 'image',
-                    imageMessage: imageMessage,
-                    size: message.size,
-                    time: "00:" + n,
-                    userType: "sender",
-                    image: avatar4,
-                    isImageMessage: true,
-                    isFileMessage: false
-                }
-                break;
-
-            default:
-                break;
+        messageObj = {
+            id: chatMessages.length + 1,
+            message: message,
+            time: "00:" + n,
+            userType: "sender",
+            image: avatar4,
+            isFileMessage: false,
+            isImageMessage: false
         }
+        setchatMessages((prevMessages) => [...prevMessages, messageObj]);
+        console.log("massage",chatMessages)
+        socket.emit("private_message",matchUSer,message)
+        //matches the message type is text, file or image, and create object according to it
+        // switch (type) {
+        //     case "textMessage":
+        //         messageObj = {
+        //             id: chatMessages.length + 1,
+        //             message: message,
+        //             time: "00:" + n,
+        //             userType: "sender",
+        //             image: avatar4,
+        //             isFileMessage: false,
+        //             isImageMessage: false
+        //         }
+        //         break;
+
+        //     case "fileMessage":
+        //         messageObj = {
+        //             id: chatMessages.length + 1,
+        //             message: 'file',
+        //             fileMessage: message.name,
+        //             size: message.size,
+        //             time: "00:" + n,
+        //             userType: "sender",
+        //             image: avatar4,
+        //             isFileMessage: true,
+        //             isImageMessage: false
+        //         }
+        //         break;
+
+        //     case "imageMessage":
+        //         var imageMessage = [
+        //             { image: message },
+        //         ]
+
+        //         messageObj = {
+        //             id: chatMessages.length + 1,
+        //             message: 'image',
+        //             imageMessage: imageMessage,
+        //             size: message.size,
+        //             time: "00:" + n,
+        //             userType: "sender",
+        //             image: avatar4,
+        //             isImageMessage: true,
+        //             isFileMessage: false
+        //         }
+        //         break;
+
+        //     default:
+        //         break;
+        // }
 
         //add message object to chat        
-        setchatMessages([...chatMessages, messageObj]);
+        
 
-        let copyallUsers = [...allUsers];
-        copyallUsers[props.active_user].messages = [...chatMessages, messageObj];
-        copyallUsers[props.active_user].isTyping = false;
-        props.setFullUser(copyallUsers);
+        // let copyallUsers = [...allUsers];
+        // copyallUsers[props.active_user].messages = [...chatMessages, messageObj];
+        // copyallUsers[props.active_user].isTyping = false;
+        // props.setFullUser(copyallUsers);
 
         scrolltoBottom();
     }
-
+    const handleChange = (e) => {
+        setIntrest(e.target.value)
+        console.log(e.target.value)
+    }
+    const submitInt = () => {
+        console.log("emi")
+        const emi = socket.emit("submitInterest", userID, "", [intres])
+        console.log(emi)
+    }
     function scrolltoBottom() {
         if (ref.current.el) {
             ref.current.getScrollElement().scrollTop = ref.current.getScrollElement().scrollHeight;
@@ -142,14 +216,17 @@ function UserChat(props) {
                     <div className={props.userSidebar ? "w-70" : "w-100"}>
 
                         {/* render user head */}
-                        <UserHead />
+                        {matchUSer && <UserHead />}
 
                         <SimpleBar
                             style={{ maxHeight: "100%" }}
                             ref={ref}
                             className="chat-conversation p-3 p-lg-4"
                             id="messages">
-                            <ul className="list-unstyled mb-0">
+
+
+
+                            {matchUSer ? <ul className="list-unstyled mb-0">
 
 
                                 {
@@ -183,7 +260,7 @@ function UserChat(props) {
                                                                     {
                                                                         chat.message &&
                                                                         <p className="mb-0">
-                                                                            {chat.message}
+                                                                            {chat.message} ashiq
                                                                         </p>
                                                                     }
                                                                     {
@@ -324,16 +401,16 @@ function UserChat(props) {
 
                                                             </div>
                                                             {
-                                                                chatMessages[key + 1] ? 
-                                                                chatMessages[key].userType === chatMessages[key + 1].userType ? null : 
+                                                                chatMessages[key + 1] ?
+                                                                    chatMessages[key].userType === chatMessages[key + 1].userType ? null :
 
-                                                                <div className="conversation-name">{chat.userType === "sender" ? 
+                                                                        <div className="conversation-name">{chat.userType === "sender" ?
 
-                                                                "Patricia Smith" : props.recentChatList[props.active_user].name}</div> : 
+                                                                            "Patricia Smith" : props.recentChatList[props.active_user].name}</div> :
 
-                                                                <div className="conversation-name">{chat.userType === "sender" ? 
-                                                                
-                                                                "Admin" : props.recentChatList[props.active_user].name}</div>
+                                                                    <div className="conversation-name">{chat.userType === "sender" ?
+
+                                                                        "Admin" : props.recentChatList[props.active_user].name}</div>
                                                             }
 
                                                         </div>
@@ -341,7 +418,10 @@ function UserChat(props) {
                                                 </li>
                                     )
                                 }
-                            </ul>
+                            </ul> : <div>
+                                <Input type="text" value={intres} onChange={handleChange} className="form-control form-control-lg bg-light border-light" placeholder="Enter Message..." />
+                                <Button onClick={submitInt}>Submit Intrest</Button>
+                            </div>}
                         </SimpleBar>
 
                         <Modal backdrop="static" isOpen={modal} centered toggle={toggle}>
@@ -358,7 +438,7 @@ function UserChat(props) {
                             </ModalBody>
                         </Modal>
 
-                        <ChatInput onaddMessage={addMessage} />
+                        {matchUSer && <ChatInput onaddMessage={addMessage} />}
                     </div>
 
                     <UserProfileSidebar activeUser={props.recentChatList[props.active_user]} />

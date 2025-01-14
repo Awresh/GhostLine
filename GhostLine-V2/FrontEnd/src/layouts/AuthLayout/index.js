@@ -39,7 +39,7 @@ class Index extends Component {
             <React.Fragment>
                 <div className="layout-wrapper d-lg-flex">
                     {/* left sidebar menu */}
-                    <LeftSidebarMenu />
+                    {/* <LeftSidebarMenu /> */}
                         {/* render page content */}
                         {this.props.children}
                 </div>

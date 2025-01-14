@@ -19,6 +19,7 @@
     "i18next": "^22.4.11",
     "i18next-browser-languagedetector": "^7.0.1",
     "jwt-decode": "^3.1.2",
+    "nanoid": "^5.0.9",
     "node-sass": "^8.0.0",
     "react": "^18.2.0",
     "react-alice-carousel": "^2.7.0",
@@ -35,6 +36,7 @@
     "redux-saga": "^1.2.2",
     "simplebar-react": "^3.2.1",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.8.1",
     "yup": "^1.0.2"
   },
   "scripts": {
