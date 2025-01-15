@@ -22,13 +22,14 @@ import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 
 //i18n
 import { useTranslation } from 'react-i18next';
-const socket = io("http://ghostline.webperfection.in:8081");
+import TagInput from './TagInput';
+const socket = io("http://34.0.1.152:8081");
 
 let userID = localStorage.getItem("userID");
 
 if (!userID) {
     userID = nanoid(5);
-    localStorage.setItem("userID", userID);
+    //localStorage.setItem("userID", userID);
 }
 
 function UserChat(props) {
@@ -84,23 +85,23 @@ function UserChat(props) {
                 isFileMessage: false,
                 isImageMessage: false
             };
-    
+
             // Use functional update to ensure latest state is used
             setchatMessages((prevMessages) => [...prevMessages, messageObj]);
-    
+
             console.log(`Private message from ${data.message}`, messageObj);
         };
-    
+
         socket.on("private_message", handleMatchedInterests);
-    
+
         // Cleanup function to remove the listener
         return () => {
             socket.off("private_message", handleMatchedInterests);
             socket.disconnect();
         };
     }, [avatar1, socket]); // Include dependencies like `avatar1` and `socket`
-    
-    
+
+
     const toggle = () => setModal(!modal);
     console.log("matchUser", matchUSer)
     const addMessage = (message, type) => {
@@ -118,8 +119,8 @@ function UserChat(props) {
             isImageMessage: false
         }
         setchatMessages((prevMessages) => [...prevMessages, messageObj]);
-        console.log("massage",chatMessages)
-        socket.emit("private_message",matchUSer,message)
+        console.log("massage", chatMessages)
+        socket.emit("private_message", matchUSer, message)
         //matches the message type is text, file or image, and create object according to it
         // switch (type) {
         //     case "textMessage":
@@ -171,7 +172,7 @@ function UserChat(props) {
         // }
 
         //add message object to chat        
-        
+
 
         // let copyallUsers = [...allUsers];
         // copyallUsers[props.active_user].messages = [...chatMessages, messageObj];
@@ -211,7 +212,9 @@ function UserChat(props) {
         <React.Fragment>
             <div className="user-chat w-100">
 
-                <div className="d-lg-flex">
+
+
+                {matchUSer ? <div className="d-lg-flex">
 
                     <div className={props.userSidebar ? "w-70" : "w-100"}>
 
@@ -226,7 +229,7 @@ function UserChat(props) {
 
 
 
-                            {matchUSer ? <ul className="list-unstyled mb-0">
+                            <ul className="list-unstyled mb-0">
 
 
                                 {
@@ -418,10 +421,7 @@ function UserChat(props) {
                                                 </li>
                                     )
                                 }
-                            </ul> : <div>
-                                <Input type="text" value={intres} onChange={handleChange} className="form-control form-control-lg bg-light border-light" placeholder="Enter Message..." />
-                                <Button onClick={submitInt}>Submit Intrest</Button>
-                            </div>}
+                            </ul>
                         </SimpleBar>
 
                         <Modal backdrop="static" isOpen={modal} centered toggle={toggle}>
@@ -443,7 +443,12 @@ function UserChat(props) {
 
                     <UserProfileSidebar activeUser={props.recentChatList[props.active_user]} />
 
-                </div>
+                </div> :
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "end", height: "100%" }}>
+                        <TagInput />
+                        {/* <Input type="text" value={intres} onChange={handleChange} className="form-control form-control-lg bg-light border-light" placeholder="Enter Message..." />
+    <Button onClick={submitInt}>Submit Intrest</Button> */}
+                    </div>}
             </div>
         </React.Fragment>
     );

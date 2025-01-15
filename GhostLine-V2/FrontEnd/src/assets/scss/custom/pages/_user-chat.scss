@@ -98,7 +98,7 @@
   }
 
   .conversation-list {
-    margin-bottom: 24px;
+    // margin-bottom: 24px;
     display: inline-flex;
     position: relative;
     align-items: flex-end;
@@ -306,4 +306,17 @@ input,
 textarea {
   touch-action: manipulation !important;
   font-size: 16px !important;
+}
+.ReactTags__tag {
+  background-color: #1dbf73; /* User's preferred green */
+  color: white;
+  border-radius: 12px;
+  padding: 5px 10px;
+  margin-right: 8px;
+}
+
+.ReactTags__tagInputField {
+  border: 2px solid #1dbf73;
+  border-radius: 5px;
+  padding: 8px;
 }
