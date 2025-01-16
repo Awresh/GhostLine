@@ -5,6 +5,7 @@ import SimpleBar from "simplebar-react";
 import { io } from "socket.io-client";
 import withRouter from "../../../components/withRouter";
 import { nanoid } from 'nanoid'
+import Cookies from "js-cookie";
 //Import Components
 import UserProfileSidebar from "../../../components/UserProfileSidebar";
 import SelectContact from "../../../components/SelectContact";
@@ -23,7 +24,11 @@ import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 //i18n
 import { useTranslation } from 'react-i18next';
 import TagInput from './TagInput';
-const socket = io("http://34.0.1.152:8081");
+const socket = io("http://localhost:5000",{
+    auth:{
+        token:Cookies.get('userSession') 
+    }
+});
 
 let userID = localStorage.getItem("userID");
 
@@ -57,7 +62,17 @@ function UserChat(props) {
     //         ref.current.getScrollElement().scrollTop = ref.current.getScrollElement().scrollHeight;
     //     }
     // }, [props.active_user, props.recentChatList]);
-
+useEffect(()=>{
+    const Identify=(data)=>{
+        console.log("Identify:",data)
+        Cookies.set("userSession", data.token);
+    }
+    socket.on("session",Identify)
+    return ()=>{
+        socket.off("session",Identify)
+        socket.disconnect();
+    }
+},[])
     useEffect(() => {
         const handleMatchedInterests = (data) => {
             console.log(`Private message from ${data.roomId}`);
@@ -185,9 +200,9 @@ function UserChat(props) {
         setIntrest(e.target.value)
         console.log(e.target.value)
     }
-    const submitInt = () => {
-        console.log("emi")
-        const emi = socket.emit("submitInterest", userID, "", [intres])
+    const submitInt = (intresList) => {
+        console.log("emifds",intresList)
+        const emi = socket.emit("submitInterest", userID, "", intresList)
         console.log(emi)
     }
     function scrolltoBottom() {
@@ -445,7 +460,7 @@ function UserChat(props) {
 
                 </div> :
                     <div style={{ display: "flex", justifyContent: "center", alignItems: "end", height: "100%" }}>
-                        <TagInput />
+                        <TagInput intrsHandler={submitInt}/>
                         {/* <Input type="text" value={intres} onChange={handleChange} className="form-control form-control-lg bg-light border-light" placeholder="Enter Message..." />
     <Button onClick={submitInt}>Submit Intrest</Button> */}
                     </div>}

@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Socket.io Client</title>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 </head>
+
 <body>
     <h1>Socket.io Test</h1>
     <p id="status">Status: Disconnected</p>
     <p><strong>Logs:</strong></p>
     <textarea id="logs" rows="10" cols="50" readonly></textarea><br>
 
-    <input type="text" id="userId" placeholder="Enter your User ID"> <input type="text" id="roomId" placeholder="Enter your Room ID"><br><br>
+    <input type="text" id="userId" placeholder="Enter your User ID"> <input type="text" id="roomId"
+        placeholder="Enter your Room ID"><br><br>
     <button id="identifyBtn">Identify</button><br><br>
 
     <input type="text" id="toUserId" placeholder="Recipient User ID">
@@ -20,14 +23,14 @@
     <button id="sendBtn">Send Private Message</button>
 
     <script>
-        const socket = io("http://ghostline.webperfection.in:8081");
+        const socket = io("http://localhost:5000");
 
         const statusElem = document.getElementById('status');
         const logsElem = document.getElementById('logs');
         const identifyBtn = document.getElementById('identifyBtn');
         const sendBtn = document.getElementById('sendBtn');
         const userIdInput = document.getElementById('userId');
-        const roomIdInput =document.getElementById('roomId');
+        const roomIdInput = document.getElementById('roomId');
         const toUserIdInput = document.getElementById('toUserId');
         const messageInput = document.getElementById('message');
 
@@ -49,7 +52,9 @@
         socket.on('private_message', (data) => {
             log(`Private message from ${data.from}: ${data.message}`);
         });
-
+       socket.on('session',(data)=>{
+        console.log("session get form node",data)
+       })
         socket.on('private_message_error', (error) => {
             log(`Error: ${error.error}`);
         });
@@ -59,11 +64,15 @@
             const roomId = roomIdInput.value.trim();
             if (userId) {
                 socket.emit('identify', userId);
-                socket.emit('submitInterest',userId,roomId,["ashiq","awresh"])
+                socket.emit('submitInterest', userId, roomId, ["ashiq", "awresh"])
+                localStorage.setItem('userId', userId);
+
+                // Or store in sessionStorage (persists only in the current tab/session)
+                sessionStorage.setItem('userId', userId);
                 log(`Identified as User ID: ${userId}`);
             } else {
                 log('User ID is required to identify.');
-            }   
+            }
         });
 
         sendBtn.addEventListener('click', () => {
@@ -78,4 +87,5 @@
         });
     </script>
 </body>
+
 </html>

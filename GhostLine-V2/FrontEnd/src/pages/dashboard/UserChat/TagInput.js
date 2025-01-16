@@ -12,7 +12,7 @@ import {
 import ForumIcon from '@mui/icons-material/Forum';
 import "./TagInput.css";
 
-const TagInput = () => {
+const TagInput = ({intrsHandler}) => {
     const [selected, setSelected] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const [nearestMatching, setNearestMatching] = useState(false);
@@ -20,7 +20,7 @@ const TagInput = () => {
     const [currentHintIndex, setCurrentHintIndex] = useState(0);
 
     const hintInterests = ["TikTok", "YouTube", "Instagram", "Sports", "Dance", "Gaming"];
-
+console.log("intres",selected)
     useEffect(() => {
         if (selected.length === 0) {
             const interval = setInterval(() => {
@@ -114,7 +114,7 @@ const TagInput = () => {
                         <DropdownItem onClick={() => handleWaitingTimeChange(999)}>Forever</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
-                <Button color="primary" className="start-chat-button">
+                <Button color="primary" className="start-chat-button" onClick={()=>intrsHandler(selected)}>
                     <ForumIcon /> Start Chat
                 </Button>
             </div>
